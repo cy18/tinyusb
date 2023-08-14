@@ -52,7 +52,8 @@
        CFG_TUSB_MCU == OPT_MCU_STM32F7                               || \
        CFG_TUSB_MCU == OPT_MCU_STM32H7                               || \
       (CFG_TUSB_MCU == OPT_MCU_STM32L4 && defined(STM32L4_SYNOPSYS)  || \
-       CFG_TUSB_MCU == OPT_MCU_GD32VF103 )                           \
+       CFG_TUSB_MCU == OPT_MCU_GD32VF103                             || \
+       CFG_TUSB_MCU == OPT_MCU_GD32F4 )                               \
     )
 
 // EP_MAX       : Max number of bi-directional endpoints including EP0
@@ -119,7 +120,14 @@ static inline void __eclic_enable_interrupt (uint32_t irq) {
 static inline void __eclic_disable_interrupt (uint32_t irq){
   *(volatile uint8_t*)(ECLIC_INTERRUPT_ENABLE_BASE + (irq * 4)) = 0;
 }
-
+#elif CFG_TUSB_MCU == OPT_MCU_GD32F4
+#include "synopsys_common.h"
+#include "gd32f4xx.h"
+#define EP_MAX_FS       4U
+#define EP_FIFO_SIZE_FS 1280u
+#define EP_MAX_HS       4U
+#define EP_FIFO_SIZE_HS 4096u
+#define OTG_FS_IRQn     USBFS_IRQn
 #else
 #error "Unsupported MCUs"
 #endif
